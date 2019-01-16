@@ -29,35 +29,6 @@ namespace Shopping.DemoApp.iOS.Controllers
             SubmitRatingButton.TouchUpInside += SubmitRating;
         }
 
-		public async void AnalyzeCapture()
-		{
-			try
-			{
-				UserDialogs.Instance.ShowLoading("Processing...");
-
-				UIImage sendImage = UIImage.FromImage(CaptureImageView.Image.CGImage, 1.0f, UIImageOrientation.Right);
-
-				Emotion[] detectedEmotions = await emotionClient.RecognizeAsync(sendImage.AsJPEG().AsStream());
-				Emotion emotion = detectedEmotions.FirstOrDefault();
-
-				UserDialogs.Instance.HideLoading();
-
-				if (emotion != null)
-				{
-					SetRating(emotion.Scores.Happiness);
-				}
-				else
-				{
-					await UserDialogs.Instance.AlertAsync("No face detected. Please, try again.");
-				}
-			}
-			catch
-			{
-				UserDialogs.Instance.HideLoading();
-				await UserDialogs.Instance.AlertAsync("There was an error analyzing your photo. Please, try again.");
-			}
-		}
-
         public void SetCaptureImage(NSData imageData)
         {
 			TopLabel.Text = "Please, wait a few seconds for us to run facial recognition";
